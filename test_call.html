@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Direct Voice Call — Muhammad Patient Intake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: #131b2e;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #06b6d4;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 580px;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+    .badge {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    p.desc {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+    .info-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .info-box code {
+      color: #a5b4fc;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .call-btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      border: none;
+      padding: 1.1rem 2.2rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+      transition: all 0.2s;
+    }
+    .call-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(79, 70, 229, 0.6);
+    }
+    .call-btn.active {
+      background: #ef4444;
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
+    }
+    .status-box {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--accent);
+      min-height: 24px;
+    }
+    .dashboard-link {
+      margin-top: 2rem;
+      display: block;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .dashboard-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">Official Vapi WebRTC Audio</div>
+    <h1>Talk to Muhammad</h1>
+    <p class="desc">
+      Connected directly to your live Vapi assistant. Click the button below to start your real-time voice call using your microphone.
+    </p>
+
+    <div class="info-box">
+      <div><strong>Assistant:</strong> Muhammad (Clinical Voice Intake)</div>
+      <div><strong>Status:</strong> <span id="vapi-ready-status">Connecting to server configuration...</span></div>
+      <div><strong>Engine:</strong> GPT-4o-mini + Deepgram STT</div>
+    </div>
+
+    <div>
+      <button id="call-btn" class="call-btn" onclick="toggleVapiCall()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <span id="call-text">Start Voice Call</span>
+      </button>
+    </div>
+
+    <div id="status-msg" class="status-box">Ready to connect. Click above to speak.</div>
+
+    <a href="/dashboard" class="dashboard-link">&larr; Open Patient Registration Dashboard</a>
+  </div>
+
+  <!-- Official Vapi Web SDK script tag -->
+  <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
+  <script>
+    var vapi = null;
+    var isCallActive = false;
+    var currentConfig = null;
+    var liveTranscript = [];
+
+    window.addEventListener('load', async function () {
+      try {
+        const resp = await fetch('/api/vapi-config');
+        currentConfig = await resp.json();
+        document.getElementById('vapi-ready-status').textContent = 'Ready (WebRTC Audio)';
+
+        if (window.vapiSDK && currentConfig.public_key && currentConfig.assistant_id) {
+          initVapiInstance();
+        } else {
+          // Wait for SDK script to load
+          const poll = setInterval(() => {
+            if (window.vapiSDK && currentConfig && currentConfig.public_key) {
+              clearInterval(poll);
+              initVapiInstance();
+            }
+          }, 300);
+        }
+      } catch (err) {
+        console.error('Failed to load Vapi configuration:', err);
+        document.getElementById('vapi-ready-status').textContent = 'Config Error: ' + err.message;
+      }
+    });
+
+    function initVapiInstance() {
+      if (!window.vapiSDK || !currentConfig) return;
+      vapi = window.vapiSDK.run({
+        apiKey: currentConfig.public_key,
+        assistant: currentConfig.assistant_id,
+        config: {
+          position: "bottom-right",
+          offset: "40px",
+          width: "60px",
+          height: "60px",
+        }
+      });
+
+      vapi.on('call-start', () => {
+        isCallActive = true;
+        liveTranscript = [];
+        document.getElementById('call-btn').classList.add('active');
+        document.getElementById('call-text').textContent = 'End Call';
+        document.getElementById('status-msg').textContent = 'Speaking live with Muhammad... (Listening)';
+      });
+
+      vapi.on('call-end', async () => {
+        isCallActive = false;
+        document.getElementById('call-btn').classList.remove('active');
+        document.getElementById('call-text').textContent = 'Start Voice Call';
+        document.getElementById('status-msg').textContent = 'Call concluded. Saving intake data...';
+
+        // Ensure call transcript is saved to backend
+        if (liveTranscript.length > 0) {
+          try {
+            await fetch('/vapi/webhook', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                message: {
+                  type: 'end-of-call-report',
+                  call: { id: 'web-' + Date.now(), customer: { number: 'In-Browser Caller' } },
+                  artifact: { transcript: liveTranscript.join('\n') },
+                  summary: 'In-browser voice intake completed with Muhammad.'
+                }
+              })
+            });
+          } catch (e) {
+            console.warn('Call report sync error:', e);
+          }
+        }
+      });
+
+      vapi.on('speech-start', () => {
+        document.getElementById('status-msg').textContent = 'Muhammad is speaking...';
+      });
+
+      vapi.on('speech-end', () => {
+        document.getElementById('status-msg').textContent = 'Muhammad is listening to you...';
+      });
+
+      // Capture messages, tool-calls, and transcripts in real time
+      vapi.on('message', async (msg) => {
+        console.log('Vapi event:', msg);
+        if (msg.type === 'transcript' && msg.transcript) {
+          liveTranscript.push((msg.role === 'assistant' ? 'Muhammad: ' : 'Caller: ') + msg.transcript);
+        }
+
+        // Bridge client-side tool calls directly to our local FastAPI SQLite database
+        if (msg.type === 'tool-calls' && msg.toolCallList) {
+          document.getElementById('status-msg').textContent = 'Processing patient record...';
+          try {
+            const resp = await fetch('/vapi/webhook', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: msg })
+            });
+            const data = await resp.json();
+            console.log('Tool execution synced to SQLite:', data);
+
+            // Return tool results back to Muhammad so the voice call continues seamlessly
+            if (data.results && data.results.length > 0) {
+              vapi.send({
+                type: 'tool-results',
+                toolWithResults: data.results
+              });
+            }
+          } catch (err) {
+            console.error('Failed to sync tool call locally:', err);
+          }
+        }
+      });
+
+      vapi.on('error', (e) => {
+        console.error("Vapi Error:", e);
+        document.getElementById('status-msg').textContent = 'Error: ' + (e.message || JSON.stringify(e));
+        document.getElementById('call-btn').classList.remove('active');
+        document.getElementById('call-text').textContent = 'Start Voice Call';
+        isCallActive = false;
+      });
+    }
+
+    function toggleVapiCall() {
+      if (!vapi) {
+        alert("Initializing Vapi voice engine... please try again in 2 seconds.");
+        return;
+      }
+      if (isCallActive) {
+        vapi.stop();
+      } else {
+        document.getElementById('status-msg').textContent = 'Requesting mic access & connecting...';
+        vapi.start(currentConfig ? currentConfig.assistant_id : undefined);
+      }
+    }
+  </script>
+</body>
+</html>
